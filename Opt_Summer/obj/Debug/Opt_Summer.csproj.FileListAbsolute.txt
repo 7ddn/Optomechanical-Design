@@ -1,0 +1,10 @@
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\Opt_Summer.exe.config
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\Opt_Summer.exe
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\Opt_Summer.pdb
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.csprojAssemblyReference.cache
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.Properties.Resources.resources
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.csproj.GenerateResource.cache
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.csproj.CoreCompileInputs.cache
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.exe
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.pdb
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.Form1.resources
