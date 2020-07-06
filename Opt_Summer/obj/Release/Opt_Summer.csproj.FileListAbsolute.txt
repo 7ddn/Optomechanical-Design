@@ -1,0 +1,14 @@
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\Opt_Summer.exe.config
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\Opt_Summer.exe
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\Opt_Summer.pdb
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\Newtonsoft.Json.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\Newtonsoft.Json.xml
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Release\Opt_Summer.csprojAssemblyReference.cache
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Release\Opt_Summer.DataAnalysis.resources
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Release\Opt_Summer.Form1.resources
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Release\Opt_Summer.Properties.Resources.resources
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Release\Opt_Summer.csproj.GenerateResource.cache
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Release\Opt_Summer.csproj.CoreCompileInputs.cache
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Release\Opt_Summer.csproj.CopyComplete
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Release\Opt_Summer.exe
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Release\Opt_Summer.pdb

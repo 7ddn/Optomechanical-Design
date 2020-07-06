@@ -2,15 +2,19 @@
 {
     public class Lens
     {
-        public double Radius;
-        public double Refraction;
-        public double Thickness;
+        public readonly double Radius;
+        public readonly double Refractiond;
+        public readonly double RefractionC;
+        public readonly double RefractionF;
+        public readonly double Thickness;
 
-        public Lens(double radius, double refraction, double thickness)
+        public Lens(double radius, double refractiond, double thickness, double refractionC, double refractionF)
         {
             Radius = radius;
-            Refraction = refraction;
+            Refractiond = refractiond;
             Thickness = thickness;
+            RefractionC = refractionC;
+            RefractionF = refractionF;
         }
     }
 }

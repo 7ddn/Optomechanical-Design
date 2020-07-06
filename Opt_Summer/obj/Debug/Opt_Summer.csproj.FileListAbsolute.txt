@@ -8,3 +8,7 @@ F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.csproj.CoreC
 F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.exe
 F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.pdb
 F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.Form1.resources
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.DataAnalysis.resources
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\Newtonsoft.Json.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\Newtonsoft.Json.xml
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.csproj.CopyComplete
