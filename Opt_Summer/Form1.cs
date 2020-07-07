@@ -476,14 +476,31 @@ namespace Opt_Summer
 
 
             // 轴外点沿主光线的细光束成像位置的计算
-            var i1 = light.GetActualArgs(lenses[1], kEta * D / 2)[0];
-            var h1 = lenses[1].Radius * Math.Sin(u1 + i1);
+            Kw = 1;
+            kEta = 0;
+            if (Math.Abs(lenses[0].Thickness - Utility.Infinity) < 1.0E-05)
+            {
+                u1 = Kw * W * Math.PI / 180;
+                l1 = lp + kEta * D / 2 / Math.Tan(u1);
+            }
+            else
+            {
+                u1 = Math.Atan((Kw * y - kEta * D / 2) / (lp - lenses[0].Thickness));
+                l1 = lp + kEta * D / 2 / Math.Tan(u1);
+            }
+            light = new Light(1, l1, u1);
+            
+            
+            var i1 = light.GetActualArgs(lenses[1], D / 2)[0]; //i1
+            // u1 = light.U;
+            // L = lenses[0].Thickness;
+            // var h1 = lenses[1].Radius * Math.Sin(u1 + i1);
             var PA = light.L * Math.Sin(u1) / Math.Cos((i1 - u1) / 2);
             var x = PA * PA / 2 * lenses[1].Radius;
             double s, t;
-            s = t = (light.L - x) / Math.Cos(u1);
+            s = t = (lenses[0].Thickness - x) / Math.Cos(u1);
             double t_ = 0, s_ = 0, U_ = 0;
-            var args = light.GetActualArgs(lenses[1], 0);
+            var args = light.GetActualArgs(lenses[1], D / 2);
             var x_ = x;
             for (int i = 1; i < lenses.Count - 1; i++)
             {
@@ -491,21 +508,22 @@ namespace Opt_Summer
                 t_ = lenses[i].Refractiond * Math.Pow(Math.Cos(args[1]), 2) /
                      ((lenses[i].Refractiond * Math.Cos(args[1]) - light.NowRefraction * Math.Cos(args[0])) /
                          lenses[i].Radius + light.NowRefraction * Math.Pow(Math.Cos(args[0]), 2) / t);
+                //MessageBox.Show("r = " + lenses[i].Radius + " t‘’ = "+ t_);
                 s_ = lenses[i].Refractiond /
                      ((lenses[i].Refractiond * Math.Cos(args[1]) - light.NowRefraction * Math.Cos(args[0])) /
                          lenses[i].Radius + light.NowRefraction / s);
-                U_ = args[3];
-                light = light.Actual(lenses[i], 0, 'd');
-                args = light.GetActualArgs(lenses[i + 1], 0);
+                light = light.Actual(lenses[i], D/2, 'd');
+                args = light.GetActualArgs(lenses[i + 1], D/2);
                 PA = light.L * Math.Sin(light.U) / Math.Cos((args[0] - light.U) / 2);
                 x_ = PA * PA / (2 * lenses[i + 1].Radius);
-                var Dv = (lenses[i].Thickness - x + x_) / Math.Cos(U_);
+                var Dv = (lenses[i].Thickness - x + x_) / Math.Cos(light.U);
+                
                 t = t_ - Dv;
                 s = s_ - Dv;
             }
 
-            var xt = t_ * Math.Cos(U_) + x - paraxialL;
-            var xs = s_ * Math.Cos(U_) + x - paraxialL;
+            var xt = t_ * Math.Cos(light.U) + x - paraxialL;
+            var xs = s_ * Math.Cos(light.U) + x - paraxialL;
             var dx = xt - xs;
             dataAnalysis.Data11 = Math.Round(xt, 10).ToString();
             dataAnalysis.Data12 = Math.Round(xs, 10).ToString();
@@ -627,7 +645,7 @@ namespace Opt_Summer
                 startLight = startLight.Paraxial(lenses[i], a, ty);
             }
 
-            startLight.L = Math.Round(startLight.L, 6);
+            startLight.L = Math.Round(startLight.L, 10);
 
             return startLight;
         }
@@ -639,7 +657,7 @@ namespace Opt_Summer
                 startLight = startLight.Actual(lenses[i], a, ty);
             }
 
-            startLight.L = Math.Round(startLight.L, 6);
+            startLight.L = Math.Round(startLight.L, 10);
 
             return startLight;
         }
