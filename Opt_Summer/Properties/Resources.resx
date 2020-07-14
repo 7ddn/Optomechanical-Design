@@ -114,4 +114,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="InputValueError" xml:space="preserve">
+    <value>输入数据只能为INFINITY或数字</value>
+  </data>
+  <data name="textFormat" xml:space="preserve">
+    <value>文本文件 (*.txt)|*.txt</value>
+  </data>
+  <data name="loadDataTitle" xml:space="preserve">
+    <value>打开保存的配置信息</value>
+  </data>
+  <data name="loadError" xml:space="preserve">
+    <value>读取失败</value>
+  </data>
+  <data name="authorityError1" xml:space="preserve">
+    <value>权限问题 .
+
+ 错误信息: {0}
+
+</value>
+  </data>
+  <data name="authorityError2" xml:space="preserve">
+    <value>详细:
+
+{0}</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="saveDataTitle" xml:space="preserve">
+    <value>保存配置数据</value>
+  </data>
+  <data name="saveSucceeded" xml:space="preserve">
+    <value>保存完成!</value>
+  </data>
 </root>

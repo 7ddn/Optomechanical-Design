@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace Opt_Summer.Calculate
 {
     public class Light
     {
-        public double U;
+        public readonly double U;
         public double L;
-        public double NowRefraction;
+        public readonly double NowRefraction;
 
         public Light(double nowRefraction, double l, double u)
         {
@@ -71,24 +70,25 @@ namespace Opt_Summer.Calculate
                     break;
                 }
             }
-            double sinI = (this.L - len.Radius) / len.Radius * Math.Sin(this.U);
-            if (this.L >= Utility.Infinity) sinI = h1 / len.Radius;
-            double sinI_ = this.NowRefraction / nextRefraction * sinI;
-            double U_ = U + Math.Asin(sinI)-Math.Asin(sinI_);
-            double L_ = len.Radius + len.Radius * sinI_ / Math.Sin(U_);
-            return new Light(nextRefraction, L_ - len.Thickness, U_);
+            var sinI = (this.L - len.Radius) / len.Radius * Math.Sin(this.U);
+            if (L >= Utility.Infinity) sinI = h1 / len.Radius;
+            var sinINext = this.NowRefraction / nextRefraction * sinI;
+            var uNext = U + Math.Asin(sinI)-Math.Asin(sinINext);
+            var lNext = len.Radius + len.Radius * sinINext / Math.Sin(uNext);
+            return new Light(nextRefraction, lNext - len.Thickness, uNext);
         }
 
         public List<double> GetActualArgs(Lens len, double h1)
         {
-            double nextRefraction = len.Refractiond;
-            double sinI = (this.L - len.Radius) / len.Radius * Math.Sin(this.U);
+            var nextRefraction = len.Refractiond;
+            var sinI = (this.L - len.Radius) / len.Radius * Math.Sin(this.U);
             if (this.L >= Utility.Infinity) sinI = h1 / len.Radius;
-            double sinI_ = this.NowRefraction / nextRefraction * sinI;
-            double U_ = U + Math.Asin(sinI)-Math.Asin(sinI_);
-            double L_ = len.Radius + len.Radius * sinI_ / Math.Sin(U_);
-            return new List<double>{Math.Asin(sinI),Math.Asin(sinI_),U_,L_};
+            var sinINext = this.NowRefraction / nextRefraction * sinI;
+            var uNext = U + Math.Asin(sinI)-Math.Asin(sinINext);
+            var lNext = len.Radius + len.Radius * sinINext / Math.Sin(uNext);
+            return new List<double>{Math.Asin(sinI),Math.Asin(sinINext),uNext,lNext};
         }
+        
         
       
     }

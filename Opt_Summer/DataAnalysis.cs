@@ -21,19 +21,16 @@ namespace Opt_Summer
 
         public string Data3
         {
-            get => data3.Text;
             set => data3.Text = value;
         }
 
         public string Data4
         {
-            get => data4.Text;
             set => data4.Text = value;
         }
 
         public string Data5
         {
-            get => data5.Text;
             set => data5.Text = value;
         }
 
@@ -89,13 +86,11 @@ namespace Opt_Summer
 
         public string Data16
         {
-            get => data16.Text;
             set => data16.Text = value;
         }
 
         public string Data17
         {
-            get => data17.Text;
             set => data17.Text = value;
         }
 
@@ -132,91 +127,76 @@ namespace Opt_Summer
 
         public string DataD1
         {
-            get => datad1.Text;
             set => datad1.Text = value;
         }
 
         public string DataD2
         {
-            get => datad2.Text;
             set => datad2.Text = value;
         }
 
         public string DataD3
         {
-            get => datad3.Text;
             set => datad3.Text = value;
         }
 
         public string DataD4
         {
-            get => datad4.Text;
             set => datad4.Text = value;
         }
 
         public string DataD5
         {
-            get => datad5.Text;
             set => datad5.Text = value;
         }
 
         public string DataC1
         {
-            get => datac1.Text;
             set => datac1.Text = value;
         }
 
         public string DataC2
         {
-            get => datac2.Text;
             set => datac2.Text = value;
         }
 
         public string DataC3
         {
-            get => datac3.Text;
             set => datac3.Text = value;
         }
 
         public string DataC4
         {
-            get => datac4.Text;
             set => datac4.Text = value;
         }
 
         public string DataC5
         {
-            get => datac5.Text;
             set => datac5.Text = value;
         }
 
         public string DataF1
         {
-            get => dataf1.Text;
             set => dataf1.Text = value;
         }
 
         public string DataF2
         {
-            get => dataf2.Text;
             set => dataf2.Text = value;
         }
 
         public string DataF3
         {
-            get => dataf3.Text;
             set => dataf3.Text = value;
         }
 
         public string DataF4
         {
-            get => dataf4.Text;
             set => dataf4.Text = value;
         }
 
         public string DataF5
         {
-            get => dataf5.Text;
             set => dataf5.Text = value;
         }
     }

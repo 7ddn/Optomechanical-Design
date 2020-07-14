@@ -3,18 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security;
-using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
 using Opt_Summer.Calculate;
+using Opt_Summer.Properties;
 
 namespace Opt_Summer
 {
     public partial class Form1 : Form
     {
-        private OpenFileDialog _openFileDialog;
-        private SaveFileDialog _saveFileDialog;
 
         public Form1()
         {
@@ -65,20 +62,9 @@ namespace Opt_Summer
             lensList.AllowUserToDeleteRows = false;
             lensList.MultiSelect = false;
             lensList.Columns[0].ReadOnly = true;
-
-            //lensList.CellEndEdit += lensList_CellEndEdit;
+            
         }
-
-        /*private void lensList_CellEndEdit(object sender, DataGridViewCellEventArgs e)
-        {
-            var newValue = 
-            if ((newValue != "INFINITY" && !Utility.IsNumberic(newValue)))
-            {
-                var message = "只能输入INFINITY或者数字";
-                MessageBox.Show(message, "错误");
-            }
-
-        }*/
+        
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -124,6 +110,11 @@ namespace Opt_Summer
 
         private void button3_Click(object sender, EventArgs e)
         {
+            Calc();
+        }
+
+        private void Calc()
+        {
             var lenses = new List<Lens>();
 
             //获取透镜值
@@ -131,15 +122,15 @@ namespace Opt_Summer
             {
                 lenses.AddRange(from DataGridViewRow row in lensList.Rows
                     let radius = Utility.ParseInfinity(row.Cells[1].Value)
-                    let refractiond = Utility.ParseInfinity(row.Cells[3].Value)
+                    let refractionD = Utility.ParseInfinity(row.Cells[3].Value)
                     let refractionC = Utility.ParseInfinity(row.Cells[4].Value)
                     let refractionF = Utility.ParseInfinity(row.Cells[5].Value)
                     let thickness = Utility.ParseInfinity(row.Cells[2].Value)
-                    select new Lens(radius, refractiond, thickness, refractionC, refractionF));
+                    select new Lens(radius, refractionD, thickness, refractionC, refractionF));
             }
             catch
             {
-                MessageBox.Show("输入数据只能为INFINITY或数字");
+                MessageBox.Show(Resources.InputValueError);
                 return;
             }
 
@@ -178,7 +169,7 @@ namespace Opt_Summer
             startLight = new Light(1, length1, lightAngle1);
 
             // 更新出瞳距
-            dataAnalysis.Data3 = RepeatedLightParaxial(startLight, 'd', lenses, diaphragm / 2).L.ToString(); // 出瞳距
+            dataAnalysis.Data3 = Utility.RepeatedLightParaxial(startLight, 'd', lenses, diaphragm / 2).L.ToString(); // 出瞳距
 
             // 计算第一近轴光线
 
@@ -202,12 +193,12 @@ namespace Opt_Summer
             startLight = new Light(1, length1, lightAngle1);
 
 
-            var lightD = RepeatedLightParaxial(startLight, 'd', lenses, diaphragm / 2);
+            var lightD = Utility.RepeatedLightParaxial(startLight, 'd', lenses, diaphragm / 2);
             var lengthLightD = lightD.L;
             dataAnalysis.DataD1 = Math.Round(lengthLightD, 10).ToString(); //d光理想像距
-            var lengthLightF = RepeatedLightParaxial(startLight, 'F', lenses, diaphragm / 2).L;
+            var lengthLightF = Utility.RepeatedLightParaxial(startLight, 'F', lenses, diaphragm / 2).L;
             dataAnalysis.DataF1 = lengthLightF.ToString(); //F光理想像距
-            var lengthLightC = RepeatedLightParaxial(startLight, 'C', lenses, diaphragm / 2).L;
+            var lengthLightC = Utility.RepeatedLightParaxial(startLight, 'C', lenses, diaphragm / 2).L;
             dataAnalysis.DataC1 = lengthLightC.ToString(); //C光理想像距
 
             if (Math.Abs(length1 - Utility.Infinity) > 1.0E-05)
@@ -230,7 +221,7 @@ namespace Opt_Summer
                 .ToString(); //零孔径位置色差
 
 
-            // 计算无穷远实际光路
+            // 计算轴上点实际光路
             double kEta = 1; //取点系数
             if (Math.Abs(lenses[0].Thickness - Utility.Infinity) < 1.0E-05)
             {
@@ -246,11 +237,11 @@ namespace Opt_Summer
             startLight = new Light(1, length1, lightAngle1);
 
             // 更新全孔径实际光线相关信息
-            var lengthLightDFullAperture = RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2).L;
+            var lengthLightDFullAperture = Utility.RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2).L;
             dataAnalysis.DataD2 = lengthLightDFullAperture.ToString(); // d光全孔径实际像距
-            var lengthLightFFullAperture = RepeatedLightActual(startLight, 'F', lenses, kEta * diaphragm / 2).L;
+            var lengthLightFFullAperture = Utility.RepeatedLightActual(startLight, 'F', lenses, kEta * diaphragm / 2).L;
             dataAnalysis.DataF2 = lengthLightFFullAperture.ToString(); // F光全孔径实际像距
-            var lengthLightCFullAperture = RepeatedLightActual(startLight, 'C', lenses, kEta * diaphragm / 2).L;
+            var lengthLightCFullAperture = Utility.RepeatedLightActual(startLight, 'C', lenses, kEta * diaphragm / 2).L;
             dataAnalysis.DataC2 = lengthLightCFullAperture.ToString(); // C光全孔径实际像距
             dataAnalysis.Data6 = Math.Round(lengthLightDFullAperture - lengthLightD, 10).ToString(); //全孔径球差
             dataAnalysis.Data8 =
@@ -272,17 +263,18 @@ namespace Opt_Summer
             startLight = new Light(1, length1, lightAngle1);
 
             // 更新0.7孔径实际光线相关信息
-            var lengthLightD07Aperture = RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2).L;
+            var lengthLightD07Aperture = Utility.RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2).L;
             dataAnalysis.DataD3 = lengthLightD07Aperture.ToString(); // d光0.7孔径实际像距
-            var lengthLightF07Aperture = RepeatedLightActual(startLight, 'F', lenses, kEta * diaphragm / 2).L;
+            var lengthLightF07Aperture = Utility.RepeatedLightActual(startLight, 'F', lenses, kEta * diaphragm / 2).L;
             dataAnalysis.DataF3 = lengthLightF07Aperture.ToString(); // F光0.7孔径实际像距
-            var lengthLightC07Aperture = RepeatedLightActual(startLight, 'C', lenses, kEta * diaphragm / 2).L;
+            var lengthLightC07Aperture = Utility.RepeatedLightActual(startLight, 'C', lenses, kEta * diaphragm / 2).L;
             dataAnalysis.DataC3 = lengthLightC07Aperture.ToString(); // C光0.7孔径实际像距
             dataAnalysis.Data7 = Math.Round(lengthLightD07Aperture - lengthLightD, 10).ToString(); //0.7孔径球差
             dataAnalysis.Data9 = Math.Round(lengthLightF07Aperture - lengthLightC07Aperture, 10)
                 .ToString(); // 0.7孔径位置色差
 
             // 计算轴外光全视场实际光路
+            // ReSharper disable once InconsistentNaming
             double Kw = 1; //视场取点系数
             kEta = 0; //孔径取点系数
             if (Math.Abs(lenses[0].Thickness - Utility.Infinity) < 1.0E-05)
@@ -299,7 +291,7 @@ namespace Opt_Summer
 
             startLight = new Light(1, length1, lightAngle1);
 
-            var dLight = RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
+            var dLight = Utility.RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
             var heightDActualImageFullAperture =
                 Math.Abs(Math.Round((dLight.L - lengthLightD) * Math.Tan(dLight.U), 10));
             dataAnalysis.DataD4 = heightDActualImageFullAperture.ToString(); // d光全视场实际像高
@@ -307,11 +299,11 @@ namespace Opt_Summer
             dataAnalysis.Data16 = distortionDFullAperture.ToString(); // d光全视场绝对畸变
             dataAnalysis.Data14 = Math.Round(distortionDFullAperture / heightIdealImageFullAperture, 10)
                 .ToString(); //d光全视场相对畸变
-            var cLight = RepeatedLightActual(startLight, 'C', lenses, kEta * diaphragm / 2);
+            var cLight = Utility.RepeatedLightActual(startLight, 'C', lenses, kEta * diaphragm / 2);
             var heightCActualImageFullAperture = (cLight.L - lengthLightD) * Math.Tan(cLight.U);
             dataAnalysis.DataC4 =
                 Math.Abs(Math.Round(heightCActualImageFullAperture, 10)).ToString(); // C光全视场实际像高
-            var fLight = RepeatedLightActual(startLight, 'F', lenses, kEta * diaphragm / 2);
+            var fLight = Utility.RepeatedLightActual(startLight, 'F', lenses, kEta * diaphragm / 2);
             var heightFActualImageFullAperture = (fLight.L - lengthLightD) * Math.Tan(fLight.U);
             dataAnalysis.DataF4 =
                 Math.Abs(Math.Round(heightFActualImageFullAperture, 10)).ToString(); // F光全视场实际像高
@@ -336,7 +328,7 @@ namespace Opt_Summer
 
             startLight = new Light(1, length1, lightAngle1);
 
-            var light1U = RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
+            var light1U = Utility.RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
             var lu = Math.Abs(Math.Round((light1U.L - lengthLightD) * Math.Tan(light1U.U), 10));
 
             kEta = -0.7;
@@ -354,7 +346,7 @@ namespace Opt_Summer
 
             startLight = new Light(1, length1, lightAngle1);
 
-            var light1d = RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
+            var light1d = Utility.RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
             var ldd = Math.Abs(Math.Round((light1d.L - lengthLightD) * Math.Tan(light1d.U), 10));
 
             dataAnalysis.Data19 = Math.Round((lu + ldd) / 2 - heightDActualImageFullAperture, 10).ToString();
@@ -375,7 +367,7 @@ namespace Opt_Summer
 
             startLight = new Light(1, length1, lightAngle1);
 
-            light1U = RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
+            light1U = Utility.RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
             lu = Math.Abs(Math.Round((light1U.L - lengthLightD) * Math.Tan(light1U.U), 10));
 
             kEta = -1;
@@ -393,7 +385,7 @@ namespace Opt_Summer
 
             startLight = new Light(1, length1, lightAngle1);
 
-            light1d = RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
+            light1d = Utility.RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
             ldd = Math.Abs(Math.Round((light1d.L - lengthLightD) * Math.Tan(light1d.U), 10));
 
             dataAnalysis.Data18 = Math.Round((lu + ldd) / 2 - heightDActualImageFullAperture, 10).ToString();
@@ -416,18 +408,18 @@ namespace Opt_Summer
 
             startLight = new Light(1, length1, lightAngle1);
 
-            dLight = RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
+            dLight = Utility.RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
             var heightDImageActual07Aperture = Math.Abs(Math.Round((dLight.L - lengthLightD) * Math.Tan(dLight.U), 10));
             dataAnalysis.DataD5 = heightDImageActual07Aperture.ToString(); // d光0.7视场实际像高
             var distortionD07Aperture = Math.Round(heightDImageActual07Aperture - heightIdealImage07Aperture, 10);
             dataAnalysis.Data17 = distortionD07Aperture.ToString(); // d光0.7视场绝对畸变
             dataAnalysis.Data15 = Math.Round(distortionD07Aperture / heightIdealImage07Aperture, 10)
                 .ToString(); //d光0.7视场相对畸变
-            cLight = RepeatedLightActual(startLight, 'C', lenses, kEta * diaphragm / 2);
+            cLight = Utility.RepeatedLightActual(startLight, 'C', lenses, kEta * diaphragm / 2);
             var heightCActualImage07Aperture = Math.Abs(Math.Round((cLight.L - lengthLightD) * Math.Tan(cLight.U), 10));
             dataAnalysis.DataC5 = heightCActualImage07Aperture.ToString(); // C光0.7视场实际像高
 
-            fLight = RepeatedLightActual(startLight, 'F', lenses, kEta * diaphragm / 2);
+            fLight = Utility.RepeatedLightActual(startLight, 'F', lenses, kEta * diaphragm / 2);
             var heightFActualImage07Aperture = Math.Abs(Math.Round((fLight.L - lengthLightD) * Math.Tan(fLight.U), 10));
             dataAnalysis.DataF5 = heightFActualImage07Aperture.ToString(); // F光0.7视场实际像高
             dataAnalysis.Data23 =
@@ -451,7 +443,7 @@ namespace Opt_Summer
 
             startLight = new Light(1, length1, lightAngle1);
 
-            light1U = RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
+            light1U = Utility.RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
             lu = Math.Abs(Math.Round((light1U.L - lengthLightD) * Math.Tan(light1U.U), 10));
 
             kEta = -0.7;
@@ -469,7 +461,7 @@ namespace Opt_Summer
 
             startLight = new Light(1, length1, lightAngle1);
 
-            light1d = RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
+            light1d = Utility.RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
             ldd = Math.Abs(Math.Round((light1d.L - lengthLightD) * Math.Tan(light1d.U), 10));
 
             dataAnalysis.Data21 = Math.Round((lu + ldd) / 2 - heightDImageActual07Aperture, 10).ToString();
@@ -490,7 +482,7 @@ namespace Opt_Summer
 
             startLight = new Light(1, length1, lightAngle1);
 
-            light1U = RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
+            light1U = Utility.RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
             lu = Math.Abs(Math.Round((light1U.L - lengthLightD) * Math.Tan(light1U.U), 10));
 
             kEta = -1;
@@ -508,7 +500,7 @@ namespace Opt_Summer
 
             startLight = new Light(1, length1, lightAngle1);
 
-            light1d = RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
+            light1d = Utility.RepeatedLightActual(startLight, 'd', lenses, kEta * diaphragm / 2);
             ldd = Math.Abs(Math.Round((light1d.L - lengthLightD) * Math.Tan(light1d.U), 10));
 
             dataAnalysis.Data20 = Math.Round((lu + ldd) / 2 - heightDImageActual07Aperture, 10).ToString();
@@ -530,41 +522,11 @@ namespace Opt_Summer
             }
 
             startLight = new Light(1, length1, lightAngle1);
+            
+            var tsx = Utility.Astigmatism(startLight, lenses, diaphragm, lightAngle1);
 
-
-            var i1 = startLight.GetActualArgs(lenses[1], diaphragm / 2)[0]; //i1
-            // u1 = light.U;
-            // L = lenses[0].Thickness;
-            // var h1 = lenses[1].Radius * Math.Sin(u1 + i1);
-            var PA = startLight.L * Math.Sin(lightAngle1) / Math.Cos((i1 - lightAngle1) / 2);
-            var x = PA * PA / 2 * lenses[1].Radius;
-            double s, t;
-            s = t = (lenses[0].Thickness - x) / Math.Cos(lightAngle1);
-            double t_ = 0, s_ = 0, U_ = 0;
-            var args = startLight.GetActualArgs(lenses[1], diaphragm / 2);
-            var x_ = x;
-            for (int i = 1; i < lenses.Count - 1; i++)
-            {
-                x = x_;
-                t_ = lenses[i].Refractiond * Math.Pow(Math.Cos(args[1]), 2) /
-                     ((lenses[i].Refractiond * Math.Cos(args[1]) - startLight.NowRefraction * Math.Cos(args[0])) /
-                         lenses[i].Radius + startLight.NowRefraction * Math.Pow(Math.Cos(args[0]), 2) / t);
-                //MessageBox.Show("r = " + lenses[i].Radius + " t‘’ = "+ t_);
-                s_ = lenses[i].Refractiond /
-                     ((lenses[i].Refractiond * Math.Cos(args[1]) - startLight.NowRefraction * Math.Cos(args[0])) /
-                         lenses[i].Radius + startLight.NowRefraction / s);
-                startLight = startLight.Actual(lenses[i], diaphragm / 2, 'd');
-                args = startLight.GetActualArgs(lenses[i + 1], diaphragm / 2);
-                PA = startLight.L * Math.Sin(startLight.U) / Math.Cos((args[0] - startLight.U) / 2);
-                x_ = PA * PA / (2 * lenses[i + 1].Radius);
-                var Dv = (lenses[i].Thickness - x + x_) / Math.Cos(startLight.U);
-
-                t = t_ - Dv;
-                s = s_ - Dv;
-            }
-
-            var xt = t_ * Math.Cos(startLight.U) + x - lengthLightD;
-            var xs = s_ * Math.Cos(startLight.U) + x - lengthLightD;
+            var xt = tsx[0] * Math.Cos(startLight.U) + tsx[2] - lengthLightD;
+            var xs = tsx[1] * Math.Cos(startLight.U) + tsx[2] - lengthLightD;
             var dx = xt - xs;
             dataAnalysis.Data11 = Math.Round(xt, 10).ToString();
             dataAnalysis.Data12 = Math.Round(xs, 10).ToString();
@@ -575,57 +537,15 @@ namespace Opt_Summer
             dataAnalysis.Show();
         }
 
-        private bool SaveData()
-        {
-            var jArray = new JArray();
-            var lensData = new JArray();
-            foreach (DataGridViewRow row in lensList.Rows)
-            {
-                var jObject = new JObject
-                {
-                    {"Type", (row.Cells[0].Value ?? "").ToString()},
-                    {"Radius", (row.Cells[1].Value ?? "INFINITY").ToString()},
-                    {"Thickness", (row.Cells[2].Value ?? "0").ToString()},
-                    {"RefractionD", (row.Cells[3].Value ?? "1").ToString()},
-                    {"RefractionC", (row.Cells[4].Value ?? "1").ToString()},
-                    {"RefractionF", (row.Cells[5].Value ?? "1").ToString()}
-                };
-                lensData.Add(jObject);
-            }
-
-            jArray.Add(lensData);
-            var otherArgs = new JObject
-            {
-                {"EntranceHeight", textBox1.Text},
-                {"EntranceLocation", textBox3.Text},
-                {"AOV", textBox2.Text},
-                {"Aperture", textBox4.Text},
-                {"Height", textBox5.Text}
-            };
-            jArray.Add(otherArgs);
-
-            _saveFileDialog = new SaveFileDialog
-                {Filter = "Text|*.txt", Title = "保存配置数据", InitialDirectory = Application.StartupPath};
-            _saveFileDialog.ShowDialog();
-
-            var fileName = _saveFileDialog.FileName;
-
-            var sw = new StreamWriter(fileName, true, Encoding.UTF8);
-            sw.Write(jArray.ToString());
-            sw.Close();
-            MessageBox.Show("保存完成!");
-            return true;
-        }
-
-        private bool LoadData()
+        private void LoadData()
         {
             try
             {
                 var openFileDialog = new OpenFileDialog()
                 {
                     FileName = "选择要打开的文件",
-                    Filter = "文本文件 (*.txt)|*.txt",
-                    Title = "打开保存的配置信息"
+                    Filter = Resources.textFormat,
+                    Title = Resources.loadDataTitle
                 };
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -648,11 +568,6 @@ namespace Opt_Summer
                         }
 
                         var otherArg = jArray[1];
-                        /*{"EntranceHeight", textBox1.Text},
-                        {"EntranceLocation", textBox3.Text},
-                        {"AOV", textBox2.Text},
-                        {"Aperture", textBox4.Text},
-                        {"Height", textBox5.Text}*/
                         textBox1.Text = otherArg["EntranceHeight"]?.ToString();
                         textBox2.Text = otherArg["AOV"]?.ToString();
                         textBox3.Text = otherArg["EntranceLocation"]?.ToString();
@@ -662,52 +577,26 @@ namespace Opt_Summer
                     }
                     catch (SecurityException ex)
                     {
-                        MessageBox.Show($"权限问题 .\n\n 错误信息: {ex.Message}\n\n" + $"详细:\n\n{ex.StackTrace}");
+                        MessageBox.Show(string.Format(Resources.authorityError1, ex.Message) + string.Format(Resources.authorityError2, ex.StackTrace));
                     }
                 }
-
-                return true;
             }
             catch
             {
-                MessageBox.Show("读取失败");
-                return false;
+                MessageBox.Show(Resources.loadError);
             }
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            SaveData();
+            Utility.SaveData(lensList, textBox1, textBox2, textBox3, textBox4, textBox5);
         }
 
         private void buttonLoad_Click(object sender, EventArgs e)
         {
             LoadData();
         }
-
-        private Light RepeatedLightParaxial(Light startLight, char ty, List<Lens> lenses, double a)
-        {
-            for (var i = 1; i < lenses.Count - 1; i++)
-            {
-                startLight = startLight.Paraxial(lenses[i], a, ty);
-            }
-
-            startLight.L = Math.Round(startLight.L, 10);
-
-            return startLight;
-        }
-
-        private Light RepeatedLightActual(Light startLight, char ty, List<Lens> lenses, double a)
-        {
-            for (var i = 1; i < lenses.Count - 1; i++)
-            {
-                startLight = startLight.Actual(lenses[i], a, ty);
-            }
-
-            startLight.L = Math.Round(startLight.L, 10);
-
-            return startLight;
-        }
+        
 
         private void CellEndEdit(object sender, EventArgs e)
         {
@@ -739,7 +628,7 @@ namespace Opt_Summer
             }
             catch
             {
-                return;
+                Console.Write(Resources.Error);
             }
         }
         
