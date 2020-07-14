@@ -1,0 +1,35 @@
+﻿[
+  [
+    {
+      "Type": "物面",
+      "Radius": "INFINITY",
+      "Thickness": "INFINITY",
+      "RefractionD": "1",
+      "RefractionC": "1",
+      "RefractionF": "1"
+    },
+    {
+      "Type": "光阑",
+      "Radius": "INFINITY",
+      "Thickness": "0",
+      "RefractionD": "1",
+      "RefractionC": "1",
+      "RefractionF": "1"
+    },
+    {
+      "Type": "像面",
+      "Radius": "INFINITY",
+      "Thickness": "0",
+      "RefractionD": "1",
+      "RefractionC": "1",
+      "RefractionF": "1"
+    }
+  ],
+  {
+    "EntranceHeight": "0",
+    "EntranceLocation": "0",
+    "AOV": "0",
+    "Aperture": "0",
+    "Height": "0"
+  }
+]
