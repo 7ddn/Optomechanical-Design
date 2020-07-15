@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
+using NPOI.XSSF.UserModel;
 using Opt_Summer.Calculate;
 using Opt_Summer.Properties;
 
@@ -121,11 +123,11 @@ namespace Opt_Summer
             try
             {
                 lenses.AddRange(from DataGridViewRow row in lensList.Rows
-                    let radius = Utility.ParseInfinity(row.Cells[1].Value)
-                    let refractionD = Utility.ParseInfinity(row.Cells[3].Value)
-                    let refractionC = Utility.ParseInfinity(row.Cells[4].Value)
-                    let refractionF = Utility.ParseInfinity(row.Cells[5].Value)
-                    let thickness = Utility.ParseInfinity(row.Cells[2].Value)
+                    let radius = Utility.ParseInfinity(row.Cells[1].Value, Utility.Infinity)
+                    let refractionD = Utility.ParseInfinity(row.Cells[3].Value, 1)
+                    let refractionC = Utility.ParseInfinity(row.Cells[4].Value, 1)
+                    let refractionF = Utility.ParseInfinity(row.Cells[5].Value, 1)
+                    let thickness = Utility.ParseInfinity(row.Cells[2].Value, 0)
                     select new Lens(radius, refractionD, thickness, refractionC, refractionF));
             }
             catch
@@ -544,14 +546,21 @@ namespace Opt_Summer
                 var openFileDialog = new OpenFileDialog()
                 {
                     FileName = "选择要打开的文件",
-                    Filter = Resources.textFormat,
+                    Filter = Resources.loadFormatFilter,
                     Title = Resources.loadDataTitle
                 };
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                if (openFileDialog.ShowDialog() != DialogResult.OK) return;
+                try
                 {
-                    try
+                    var fileName = openFileDialog.FileName;
+                    if (string.IsNullOrWhiteSpace(fileName))
                     {
-                        var fileName = openFileDialog.FileName;
+                        MessageBox.Show(Resources.BlankFileNameError);
+                        return;
+                    }
+                    if (fileName.EndsWith(".txt"))
+                    {
+                        // Read as JSON
                         var sr = new StreamReader(fileName);
                         var jsonContent = sr.ReadToEnd();
                         var jArray = JArray.Parse(jsonContent);
@@ -573,12 +582,47 @@ namespace Opt_Summer
                         textBox3.Text = otherArg["EntranceLocation"]?.ToString();
                         textBox4.Text = otherArg["Aperture"]?.ToString();
                         textBox5.Text = otherArg["Height"]?.ToString();
-                        ChangeVisibility();
                     }
-                    catch (SecurityException ex)
+                    else
                     {
-                        MessageBox.Show(string.Format(Resources.authorityError1, ex.Message) + string.Format(Resources.authorityError2, ex.StackTrace));
+                        //Read as Excel
+                        using (var fs = File.OpenRead(fileName))
+                        {
+                            var workbook = new XSSFWorkbook(fs);
+                            var sheet = workbook.GetSheetAt(0);
+                            if (sheet != null)
+                            {
+                                lensList.Rows.Clear();
+                                var rowCount = sheet.LastRowNum;
+                                if (rowCount > 0)
+                                {
+                                    var row = sheet.GetRow(1);
+                                    textBox1.Text = row.GetCell(0).StringCellValue;
+                                    textBox3.Text = row.GetCell(1).StringCellValue;
+                                    textBox2.Text = row.GetCell(2).StringCellValue;
+                                    textBox4.Text = row.GetCell(3).StringCellValue;
+                                    textBox5.Text = row.GetCell(4).StringCellValue;
+                                }
+
+                                for (var i = 3; i <= rowCount; i++)
+                                {
+                                    var row = sheet.GetRow(i);
+                                    var index = lensList.Rows.Add();
+                                    for (var j = 0; j < row.Cells.Count; j++)
+                                    {
+                                        lensList.Rows[index].Cells[j].Value = row.GetCell(j).StringCellValue;
+                                    }
+                                }
+                            }
+                        }
+                        
                     }
+
+                    ChangeVisibility();
+                }
+                catch (SecurityException ex)
+                {
+                    MessageBox.Show(string.Format(Resources.authorityError1, ex.Message) + string.Format(Resources.authorityError2, ex.StackTrace));
                 }
             }
             catch
@@ -589,7 +633,13 @@ namespace Opt_Summer
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
-            Utility.SaveData(lensList, textBox1, textBox2, textBox3, textBox4, textBox5);
+            var otherArgs = new List<KeyValuePair<string, string>>();
+            otherArgs.Add(new KeyValuePair<string, string>("EntranceHeight",textBox1.Text));
+            otherArgs.Add(new KeyValuePair<string, string>("EntranceLocation",textBox3.Text));
+            otherArgs.Add(new KeyValuePair<string, string>("AOV",textBox2.Text));
+            otherArgs.Add(new KeyValuePair<string, string>("Aperture",textBox4.Text));
+            otherArgs.Add(new KeyValuePair<string, string>("Height",textBox5.Text));
+            Utility.SaveData(lensList, otherArgs);
         }
 
         private void buttonLoad_Click(object sender, EventArgs e)

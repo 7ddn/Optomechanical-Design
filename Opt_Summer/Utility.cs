@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using Opt_Summer.Calculate;
 using Opt_Summer.Properties;
 
@@ -19,9 +21,9 @@ namespace Opt_Summer
             return Regex.IsMatch(value, @"[+-]?\d+(\.\d*)?");
         }
 
-        public static double ParseInfinity(object value)
+        public static double ParseInfinity(object value, double defaultValue)
         {
-            if (value == null) return 0;
+            if (value == null) return defaultValue;
             var v = value.ToString().ToUpper();
             //MessageBox.Show(IsNumeric(v) + " " + v);
             if (v != "INFINITY" && !IsNumeric(v))
@@ -29,6 +31,11 @@ namespace Opt_Summer
                 throw new ArgumentException("Input Value must be INFINITY or numbers");
             }
             return v == "INFINITY" ? Infinity : double.Parse(value.ToString());
+        }
+
+        public static double ParseInfinity(object value)
+        {
+            return ParseInfinity(value, 0);
         }
         
         public static Light RepeatedLightParaxial(Light startLight, char ty, List<Lens> lenses, double a)
@@ -58,9 +65,6 @@ namespace Opt_Summer
         public static List<double> Astigmatism(Light startLight, List<Lens> lenses, double diaphragm, double lightAngle1)
         {
             var i1 = startLight.GetActualArgs(lenses[1], diaphragm / 2)[0]; //i1
-            // u1 = light.U;
-            // L = lenses[0].Thickness;
-            // var h1 = lenses[1].Radius * Math.Sin(u1 + i1);
             var pa = startLight.L * Math.Sin(lightAngle1) / Math.Cos((i1 - lightAngle1) / 2);
             var x = pa * pa / 2 * lenses[1].Radius;
             double t;
@@ -68,13 +72,12 @@ namespace Opt_Summer
             double tNext = 0, sNext = 0;
             var args = startLight.GetActualArgs(lenses[1], diaphragm / 2);
             var xNext = x;
-            for (int i = 1; i < lenses.Count - 1; i++)
+            for (var i = 1; i < lenses.Count - 1; i++)
             {
                 x = xNext;
                 tNext = lenses[i].Refractiond * Math.Pow(Math.Cos(args[1]), 2) /
                         ((lenses[i].Refractiond * Math.Cos(args[1]) - startLight.NowRefraction * Math.Cos(args[0])) /
                             lenses[i].Radius + startLight.NowRefraction * Math.Pow(Math.Cos(args[0]), 2) / t);
-                //MessageBox.Show("r = " + lenses[i].Radius + " t‘’ = "+ t_);
                 sNext = lenses[i].Refractiond /
                         ((lenses[i].Refractiond * Math.Cos(args[1]) - startLight.NowRefraction * Math.Cos(args[0])) /
                             lenses[i].Radius + startLight.NowRefraction / s);
@@ -91,46 +94,111 @@ namespace Opt_Summer
             return new List<double>{tNext,sNext,x};
         }
 
-        public static bool SaveData(DataGridView lensList, Control textBox1, Control textBox2, Control textBox3, Control textBox4, Control textBox5)
+        public static bool SaveData(DataGridView lensList, List<KeyValuePair<string,string>> otherArgs)
         {
-            var jArray = new JArray();
-            var lensData = new JArray();
-            foreach (DataGridViewRow row in lensList.Rows)
-            {
-                var jObject = new JObject
-                {
-                    {"Type", (row.Cells[0].Value ?? "").ToString()},
-                    {"Radius", (row.Cells[1].Value ?? "INFINITY").ToString()},
-                    {"Thickness", (row.Cells[2].Value ?? "0").ToString()},
-                    {"RefractionD", (row.Cells[3].Value ?? "1").ToString()},
-                    {"RefractionC", (row.Cells[4].Value ?? "1").ToString()},
-                    {"RefractionF", (row.Cells[5].Value ?? "1").ToString()}
-                };
-                lensData.Add(jObject);
-            }
-
-            jArray.Add(lensData);
-            var otherArgs = new JObject
-            {
-                {"EntranceHeight", textBox1.Text},
-                {"EntranceLocation", textBox3.Text},
-                {"AOV", textBox2.Text},
-                {"Aperture", textBox4.Text},
-                {"Height", textBox5.Text}
-            };
-            jArray.Add(otherArgs);
-
             var saveFileDialog = new SaveFileDialog
-                {Filter = Resources.textFormat, Title = Resources.saveDataTitle, InitialDirectory = Application.StartupPath};
+                {Filter = Resources.saveFormatFilter, Title = Resources.saveDataTitle, InitialDirectory = Application.StartupPath};
             saveFileDialog.ShowDialog();
 
             var fileName = saveFileDialog.FileName;
+            if (fileName == "")
+            {
+                MessageBox.Show(Resources.BlankFileNameError);
+                return false;
+            }
 
-            var sw = new StreamWriter(fileName, true, Encoding.UTF8);
-            sw.Write(jArray.ToString());
-            sw.Close();
-            MessageBox.Show(Resources.saveSucceeded);
-            return true;
+            if (fileName.EndsWith(".txt"))
+            {
+                //save as json
+                var jArray = new JArray();
+                var lensData = new JArray();
+                foreach (DataGridViewRow row in lensList.Rows)
+                {
+                    var jObject = new JObject
+                    {
+                        {"Type", (row.Cells[0].Value ?? "").ToString()},
+                        {"Radius", (row.Cells[1].Value ?? "INFINITY").ToString()},
+                        {"Thickness", (row.Cells[2].Value ?? "0").ToString()},
+                        {"RefractionD", (row.Cells[3].Value ?? "1").ToString()},
+                        {"RefractionC", (row.Cells[4].Value ?? "1").ToString()},
+                        {"RefractionF", (row.Cells[5].Value ?? "1").ToString()}
+                    };
+                    lensData.Add(jObject);
+                }
+
+                jArray.Add(lensData);
+                var otherArgsJson = new JObject();
+                foreach (var item in otherArgs)
+                {
+                    otherArgsJson.Add(item.Key,item.Value);
+                }
+                jArray.Add(otherArgsJson);
+            
+
+                var sw = new StreamWriter(fileName, true, Encoding.UTF8);
+                sw.Write(jArray.ToString());
+                sw.Close();
+                MessageBox.Show(Resources.saveSucceeded);
+                return true;
+            }
+            else
+            {
+                // save as excel
+                IWorkbook workbook = new XSSFWorkbook();
+                try
+                {
+                    var sheet = workbook.CreateSheet("Sheet0");
+                    var rowCount = lensList.RowCount + 3;
+                    var columnCount = lensList.ColumnCount;
+                    var excelRow = sheet.CreateRow(0);
+                    ICell excelCell;
+                    for (var i = 0; i < otherArgs.Count; i++)
+                    {
+                        excelCell = excelRow.CreateCell(i);
+                        excelCell.SetCellValue(otherArgs[i].Key);
+                    }
+
+                    excelRow = sheet.CreateRow(1);
+                    for (var i = 0; i < otherArgs.Count; i++)
+                    {
+                        excelCell = excelRow.CreateCell(i);
+                        excelCell.SetCellValue(otherArgs[i].Value);
+                    }
+
+                    excelRow = sheet.CreateRow(2);
+                    for (var i = 0; i < columnCount; i++)
+                    {
+                        excelCell = excelRow.CreateCell(i);
+                        excelCell.SetCellValue(lensList.Columns[i].Name);
+                    }
+
+                    for (var i = 3; i < rowCount; i++)
+                    {
+                        var row = lensList.Rows[i - 3];
+                        excelRow = sheet.CreateRow(i);
+                        excelRow.CreateCell(0).SetCellValue((row.Cells[0].Value ?? "").ToString());
+                        excelRow.CreateCell(1).SetCellValue((row.Cells[1].Value ?? "INFINITY").ToString());
+                        excelRow.CreateCell(2).SetCellValue((row.Cells[2].Value ?? "0").ToString());
+                        excelRow.CreateCell(3).SetCellValue((row.Cells[3].Value ?? "1").ToString());
+                        excelRow.CreateCell(4).SetCellValue((row.Cells[4].Value ?? "1").ToString());
+                        excelRow.CreateCell(5).SetCellValue((row.Cells[5].Value ?? "1").ToString());
+                    }
+
+                    using (var fs = File.OpenWrite(fileName))
+                    {
+                        workbook.Write(fs);
+                        MessageBox.Show(Resources.saveSucceeded);
+                        return true;
+                    }
+                }
+                catch
+                {
+                    MessageBox.Show(Resources.saveError);
+                    return false;
+                }
+            }
+            
+            
         }
     }
 }

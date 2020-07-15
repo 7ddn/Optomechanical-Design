@@ -117,8 +117,11 @@
   <data name="InputValueError" xml:space="preserve">
     <value>输入数据只能为INFINITY或数字</value>
   </data>
-  <data name="textFormat" xml:space="preserve">
-    <value>文本文件 (*.txt)|*.txt</value>
+  <data name="saveFormatFilter" xml:space="preserve">
+    <value>文本文件(*.txt)|*.txt|Excel(*.xlsx)|*.xlsx</value>
+  </data>
+  <data name="loadFormatFilter" xml:space="preserve">
+    <value>所有支持的类型|*.txt;*.xlsx|文本文件(*.txt)|*.txt|Excel(*.xlsx)|*.xlsx</value>
   </data>
   <data name="loadDataTitle" xml:space="preserve">
     <value>打开保存的配置信息</value>
@@ -146,5 +149,11 @@
   </data>
   <data name="saveSucceeded" xml:space="preserve">
     <value>保存完成!</value>
+  </data>
+  <data name="BlankFileNameError" xml:space="preserve">
+    <value>文件名不能为空!</value>
+  </data>
+  <data name="saveError" xml:space="preserve">
+    <value>保存失败!</value>
   </data>
 </root>

@@ -12,3 +12,12 @@ F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.DataAnalysis
 F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\Newtonsoft.Json.dll
 F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\Newtonsoft.Json.xml
 F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Debug\Opt_Summer.csproj.CopyComplete
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\BouncyCastle.Crypto.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\ICSharpCode.SharpZipLib.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\NPOI.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\NPOI.OOXML.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\NPOI.OpenXml4Net.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\NPOI.OpenXmlFormats.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\BouncyCastle.Crypto.xml
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\ICSharpCode.SharpZipLib.pdb
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Debug\ICSharpCode.SharpZipLib.xml

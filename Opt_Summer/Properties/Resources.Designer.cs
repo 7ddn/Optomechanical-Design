@@ -85,6 +85,15 @@ namespace Opt_Summer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 文件名不能为空!.
+        /// </summary>
+        internal static string BlankFileNameError {
+            get {
+                return ResourceManager.GetString("BlankFileNameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         internal static string Error {
@@ -121,6 +130,15 @@ namespace Opt_Summer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 所有支持的类型|*.txt;*.xlsx|文本文件(*.txt)|*.txt|Excel(*.xlsx)|*.xlsx.
+        /// </summary>
+        internal static string loadFormatFilter {
+            get {
+                return ResourceManager.GetString("loadFormatFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 保存配置数据.
         /// </summary>
         internal static string saveDataTitle {
@@ -130,20 +148,29 @@ namespace Opt_Summer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 保存失败!.
+        /// </summary>
+        internal static string saveError {
+            get {
+                return ResourceManager.GetString("saveError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 文本文件(*.txt)|*.txt|Excel(*.xlsx)|*.xlsx.
+        /// </summary>
+        internal static string saveFormatFilter {
+            get {
+                return ResourceManager.GetString("saveFormatFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 保存完成!.
         /// </summary>
         internal static string saveSucceeded {
             get {
                 return ResourceManager.GetString("saveSucceeded", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 文本文件 (*.txt)|*.txt.
-        /// </summary>
-        internal static string textFormat {
-            get {
-                return ResourceManager.GetString("textFormat", resourceCulture);
             }
         }
     }

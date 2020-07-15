@@ -12,3 +12,15 @@ F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Release\Opt_Summer.csproj.Cor
 F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Release\Opt_Summer.csproj.CopyComplete
 F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Release\Opt_Summer.exe
 F:\Project\RiderProjects\Opt_Summer\Opt_Summer\obj\Release\Opt_Summer.pdb
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\BouncyCastle.Crypto.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\ExcelDataReader.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\ICSharpCode.SharpZipLib.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\NPOI.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\NPOI.OOXML.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\NPOI.OpenXml4Net.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\NPOI.OpenXmlFormats.dll
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\BouncyCastle.Crypto.xml
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\ExcelDataReader.pdb
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\ExcelDataReader.xml
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\ICSharpCode.SharpZipLib.pdb
+F:\Project\RiderProjects\Opt_Summer\Opt_Summer\bin\Release\ICSharpCode.SharpZipLib.xml

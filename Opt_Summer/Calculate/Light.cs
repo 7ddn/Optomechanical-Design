@@ -88,8 +88,6 @@ namespace Opt_Summer.Calculate
             var lNext = len.Radius + len.Radius * sinINext / Math.Sin(uNext);
             return new List<double>{Math.Asin(sinI),Math.Asin(sinINext),uNext,lNext};
         }
-        
-        
-      
+
     }
 }
