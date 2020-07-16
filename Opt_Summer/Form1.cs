@@ -63,6 +63,8 @@ namespace Opt_Summer
             lensList.AllowUserToDeleteRows = false;
             lensList.MultiSelect = false;
             lensList.Columns[0].ReadOnly = true;
+
+            KeyPreview = true;
         }
         
 
@@ -84,13 +86,13 @@ namespace Opt_Summer
 
         private void button2_Click(object sender, EventArgs e)
         {
-            DeleteCurrentRow();
-        }
-
-        private void DeleteCurrentRow()
-        {
             var row = lensList.CurrentRow;
             if (row == null) return;
+            DeleteRow(row);
+        }
+
+        private void DeleteRow(DataGridViewRow row)
+        {
             if (row.Index == 1)
             {
                 if (lensList.RowCount == 3)
@@ -716,6 +718,33 @@ namespace Opt_Summer
             lensList.Rows[lensList.RowCount - 1].Cells[5].Value = 1;
             
         }
-        
+
+        private void OnInsertKeyUp()
+        {
+            AddRow();
+        }
+
+        private void OnDeleteKeyUp()
+        {
+            if (lensList.SelectedRows.Count>0)
+            {
+                DeleteRow(lensList.SelectedRows[0]);
+            }
+        }
+
+        private void Frm_KeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Insert:
+                    OnInsertKeyUp();
+                    return;
+                case Keys.Delete:
+                    OnDeleteKeyUp();
+                    return;
+                default:
+                    return;
+            }
+        }
     }
 }

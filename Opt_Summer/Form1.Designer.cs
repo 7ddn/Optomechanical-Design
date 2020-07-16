@@ -69,6 +69,7 @@
             this.lensList.TabIndex = 0;
             this.lensList.CellEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.CellEndEdit);
             this.lensList.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.CellEndEdit);
+            this.lensList.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Frm_KeyUp);
             // 
             // label1
             // 
