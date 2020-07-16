@@ -123,6 +123,7 @@ namespace Opt_Summer
             this.data22 = new System.Windows.Forms.Label();
             this.label55 = new System.Windows.Forms.Label();
             this.label56 = new System.Windows.Forms.Label();
+            this.buttonExport = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -873,11 +874,22 @@ namespace Opt_Summer
             this.label56.TabIndex = 91;
             this.label56.Text = "倍率色差";
             // 
+            // buttonExport
+            // 
+            this.buttonExport.Location = new System.Drawing.Point(547, 371);
+            this.buttonExport.Name = "buttonExport";
+            this.buttonExport.Size = new System.Drawing.Size(211, 61);
+            this.buttonExport.TabIndex = 96;
+            this.buttonExport.Text = "导出报告";
+            this.buttonExport.UseVisualStyleBackColor = true;
+            this.buttonExport.Click += new System.EventHandler(this.buttonExport_Click);
+            // 
             // DataAnalysis
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.buttonExport);
             this.Controls.Add(this.data23);
             this.Controls.Add(this.label49);
             this.Controls.Add(this.data22);
@@ -975,6 +987,7 @@ namespace Opt_Summer
             this.ResumeLayout(false);
         }
 
+        private System.Windows.Forms.Button buttonExport;
         private System.Windows.Forms.Label data1;
         private System.Windows.Forms.Label data10;
         private System.Windows.Forms.Label data11;

@@ -103,6 +103,15 @@ namespace Opt_Summer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Excel(.xlsx)|*.xlsx|PDF(.pdf)|*.pdf.
+        /// </summary>
+        internal static string exportReportFormat {
+            get {
+                return ResourceManager.GetString("exportReportFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 输入数据只能为INFINITY或数字.
         /// </summary>
         internal static string InputValueError {

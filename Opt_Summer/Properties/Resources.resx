@@ -156,4 +156,7 @@
   <data name="saveError" xml:space="preserve">
     <value>保存失败!</value>
   </data>
+  <data name="exportReportFormat" xml:space="preserve">
+    <value>Excel(.xlsx)|*.xlsx|PDF(.pdf)|*.pdf</value>
+  </data>
 </root>

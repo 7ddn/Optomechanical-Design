@@ -101,7 +101,7 @@ namespace Opt_Summer
             saveFileDialog.ShowDialog();
 
             var fileName = saveFileDialog.FileName;
-            if (fileName == "")
+            if (string.IsNullOrWhiteSpace(fileName))
             {
                 MessageBox.Show(Resources.BlankFileNameError);
                 return false;
@@ -197,8 +197,17 @@ namespace Opt_Summer
                     return false;
                 }
             }
+
             
-            
+        }
+        public static void CreateSingleReportRow(ISheet sheet, int index, string itemName, string waveLength, string fieldOfView, string aperture, string itemValue)
+        {
+            var row = sheet.CreateRow(index);
+            row.CreateCell(0).SetCellValue(itemName);
+            row.CreateCell(1).SetCellValue(waveLength);
+            row.CreateCell(2).SetCellValue(fieldOfView);
+            row.CreateCell(3).SetCellValue(aperture);
+            row.CreateCell(4).SetCellValue(itemValue);
         }
     }
 }
